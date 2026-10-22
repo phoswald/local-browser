@@ -4,6 +4,13 @@
 # For more details, see
 #   https://d.android.com/r/tools/r8/keep-rules
 
+# Workaround for a crash of the release build on startup (R8 issue, debug build is not affected).
+# Kotlin multifile facade parts (e.g. kotlin.collections.CollectionsKt__IteratorsJVMKt) are
+# package-private and extend each other. R8 repackaged a part into another package, causing
+# "IllegalAccessError: Class kotlin.collections.d extended by class wf is inaccessible" at startup.
+# Keeping their names also keeps them in their package.
+-keep,allowshrinking,allowoptimization class kotlin.**.*Kt__*
+
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
