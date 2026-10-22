@@ -80,9 +80,10 @@ class LocalFileHandlerTest {
     @Test
     fun displayPath_roundTrip() {
         val sdcard = File("/storage/emulated/0")
-        assertEquals("/storage/emulated/0/", urlToDisplayPath(sdcard, BASE_URL))
-        assertEquals("/storage/emulated/0/a b/", urlToDisplayPath(sdcard, BASE_URL + "a%20b/"))
+        assertEquals("/", urlToDisplayPath(BASE_URL))
+        assertEquals("/a b/", urlToDisplayPath(BASE_URL + "a%20b/"))
         assertEquals(BASE_URL + "a%20b/", displayPathToUrl(sdcard, "/storage/emulated/0/a b/"))
+        assertEquals(BASE_URL + "a%20b/", displayPathToUrl(sdcard, "/a b/"))
         assertEquals(BASE_URL + "Documents/x.html", displayPathToUrl(sdcard, " Documents/x.html "))
         assertEquals(BASE_URL, displayPathToUrl(sdcard, "/storage/emulated/0"))
     }

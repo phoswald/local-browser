@@ -116,14 +116,14 @@ fun encodePath(path: String): String = buildString {
     }
 }
 
-/** Converts a WebView URL to the file system path shown in the address bar. */
-fun urlToDisplayPath(root: File, url: String): String {
+/** Converts a WebView URL to the path relative to the storage root shown in the address bar. */
+fun urlToDisplayPath(url: String): String {
     val uri = URI(url)
     if (uri.host != HOST) return url
-    return root.path + (uri.path ?: "/")
+    return uri.path ?: "/"
 }
 
-/** Converts address bar input (absolute or relative to [root]) to a WebView URL. */
+/** Converts address bar input (relative to [root], or absolute including it) to a WebView URL. */
 fun displayPathToUrl(root: File, input: String): String {
     val rel = input.trim().removePrefix(root.path).trimStart('/')
     return BASE_URL + encodePath(rel)

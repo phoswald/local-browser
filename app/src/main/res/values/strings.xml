@@ -2,6 +2,6 @@
     <string name="app_name">LocalBrowser</string>
     <string name="permission_text">LocalBrowser needs \"All files access\" to display HTML content from shared storage.</string>
     <string name="permission_button">Grant access</string>
-    <string name="address_label">Path</string>
+    <string name="back">Back</string>
     <string name="home">Home</string>
 </resources>
