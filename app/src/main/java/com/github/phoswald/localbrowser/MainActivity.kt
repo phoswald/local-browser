@@ -36,7 +36,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -115,6 +117,7 @@ fun BrowserScreen(root: File) {
     val focusManager = LocalFocusManager.current
     var address by remember { mutableStateOf("/") }
     var canGoBack by remember { mutableStateOf(false) }
+    var upUrl by remember { mutableStateOf<String?>(null) }
 
     fun openExternal(uri: Uri) {
         try {
@@ -148,6 +151,7 @@ fun BrowserScreen(root: File) {
                 override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
                     address = urlToDisplayPath(url)
                     canGoBack = view.canGoBack()
+                    upUrl = parentUrl(url)
                 }
             }
             loadUrl(BASE_URL)
@@ -176,6 +180,8 @@ fun BrowserScreen(root: File) {
         onGo = ::go,
         canGoBack = canGoBack,
         onBack = { webView.goBack() },
+        canGoUp = upUrl != null,
+        onUp = { upUrl?.let(webView::loadUrl) },
         onHome = { webView.loadUrl(BASE_URL) },
     ) { modifier ->
         AndroidView(factory = { webView }, modifier = modifier)
@@ -189,6 +195,8 @@ fun BrowserLayout(
     onGo: () -> Unit,
     canGoBack: Boolean,
     onBack: () -> Unit,
+    canGoUp: Boolean,
+    onUp: () -> Unit,
     onHome: () -> Unit,
     content: @Composable (Modifier) -> Unit,
 ) {
@@ -199,11 +207,17 @@ fun BrowserLayout(
                 modifier = Modifier.statusBarsPadding().padding(start = 4.dp, end = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(onClick = onBack, enabled = canGoBack) {
-                    Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.back))
-                }
-                IconButton(onClick = onHome) {
-                    Icon(painterResource(R.drawable.ic_home), contentDescription = stringResource(R.string.home))
+                // Shrink the 48dp minimum touch target so the buttons sit closer together.
+                CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 40.dp) {
+                    IconButton(onClick = onBack, enabled = canGoBack) {
+                        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.back))
+                    }
+                    IconButton(onClick = onUp, enabled = canGoUp) {
+                        Icon(painterResource(R.drawable.ic_arrow_upward), contentDescription = stringResource(R.string.up))
+                    }
+                    IconButton(onClick = onHome) {
+                        Icon(painterResource(R.drawable.ic_home), contentDescription = stringResource(R.string.home))
+                    }
                 }
                 BasicTextField(
                     value = address,
@@ -241,6 +255,8 @@ fun BrowserLayoutPreview() {
             onGo = {},
             canGoBack = true,
             onBack = {},
+            canGoUp = true,
+            onUp = {},
             onHome = {},
         ) { modifier ->
             Box(modifier, contentAlignment = Alignment.Center) {

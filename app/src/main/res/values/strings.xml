@@ -3,5 +3,6 @@
     <string name="permission_text">LocalBrowser needs \"All files access\" to display HTML content from shared storage.</string>
     <string name="permission_button">Grant access</string>
     <string name="back">Back</string>
+    <string name="up">Up</string>
     <string name="home">Home</string>
 </resources>

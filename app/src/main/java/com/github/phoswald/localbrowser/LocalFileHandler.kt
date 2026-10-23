@@ -129,6 +129,15 @@ fun urlToDisplayPath(url: String): String {
     return uri.path ?: "/"
 }
 
+/** Returns the WebView URL of the directory containing [url], or null at the root or outside [HOST]. */
+fun parentUrl(url: String): String? {
+    val uri = URI(url)
+    if (uri.host != HOST) return null
+    val path = (uri.rawPath ?: "/").trimEnd('/')
+    if (path.isEmpty()) return null
+    return BASE_URL + path.substringBeforeLast('/').trimStart('/').let { if (it.isEmpty()) it else "$it/" }
+}
+
 /** Converts address bar input (relative to [root], or absolute including it) to a WebView URL. */
 fun displayPathToUrl(root: File, input: String): String {
     val rel = input.trim().removePrefix(root.path).trimStart('/')

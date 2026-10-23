@@ -86,6 +86,16 @@ class LocalFileHandlerTest {
     }
 
     @Test
+    fun parentUrl_navigatesUp() {
+        assertEquals(null, parentUrl(BASE_URL))
+        assertEquals(BASE_URL, parentUrl(BASE_URL + "a/"))
+        assertEquals(BASE_URL, parentUrl(BASE_URL + "a.md"))
+        assertEquals(BASE_URL + "a%20b/", parentUrl(BASE_URL + "a%20b/c/"))
+        assertEquals(BASE_URL + "a%20b/", parentUrl(BASE_URL + "a%20b/c.html?x=1#y"))
+        assertEquals(null, parentUrl("https://example.com/a/"))
+    }
+
+    @Test
     fun displayPath_roundTrip() {
         val sdcard = File("/storage/emulated/0")
         assertEquals("/", urlToDisplayPath(BASE_URL))
