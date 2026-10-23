@@ -10,6 +10,7 @@ import java.net.URI
 
 const val HOST = "appassets.androidplatform.net"
 const val BASE_URL = "https://$HOST/"
+const val ASSETS_PATH = "/.localbrowser/"
 
 /**
  * Serves files below [root] for [WebViewAssetLoader], registered on path "/".
@@ -20,6 +21,7 @@ class LocalFileHandler(private val root: File) : WebViewAssetLoader.PathHandler 
     override fun handle(path: String): WebResourceResponse =
         when (val res = resolve(root, path, MimeTypeMap.getSingleton()::getMimeTypeFromExtension)) {
             is Resolution.Serve -> WebResourceResponse(res.mimeType, null, FileInputStream(res.file))
+            is Resolution.Markdown -> html(200, "OK", MarkdownPage.render(res.file.name, res.file.readText()))
             is Resolution.Listing -> html(200, "OK", DirectoryListing.render(res.dir, res.urlPath, res.dir == root.canonicalFile))
             is Resolution.Redirect -> html(200, "OK", redirectPage(res.location))
             Resolution.Forbidden -> html(403, "Forbidden", errorPage("403 Forbidden"))
@@ -34,6 +36,7 @@ class LocalFileHandler(private val root: File) : WebViewAssetLoader.PathHandler 
 
 sealed interface Resolution {
     data class Serve(val file: File, val mimeType: String) : Resolution
+    data class Markdown(val file: File) : Resolution
     data class Listing(val dir: File, val urlPath: String) : Resolution
     data class Redirect(val location: String) : Resolution
     data object Forbidden : Resolution
@@ -62,6 +65,9 @@ fun resolve(root: File, path: String, fallbackMime: (String) -> String? = { null
         return Resolution.Listing(file, "/$path")
     }
     if (file.isFile) {
+        if (file.extension.equals("md", ignoreCase = true)) {
+            return Resolution.Markdown(file)
+        }
         return Resolution.Serve(file, mimeType(file.name, fallbackMime))
     }
     return Resolution.NotFound

@@ -126,6 +126,8 @@ fun BrowserScreen(root: File) {
     val webView = remember {
         val assetLoader = WebViewAssetLoader.Builder()
             .setDomain(HOST)
+            // Must precede "/", whose handler never returns null.
+            .addPathHandler(ASSETS_PATH, WebViewAssetLoader.AssetsPathHandler(context))
             .addPathHandler("/", LocalFileHandler(root))
             .build()
         WebView(context).apply {

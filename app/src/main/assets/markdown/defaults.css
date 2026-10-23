@@ -1,0 +1,138 @@
+
+:root {
+  --font-sans:  system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono:  ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+}
+
+/* block elements */
+
+html, body, div, h1, h2, h3, h4, h5, h6, p, blockquote, pre, ol, ul, li, table, thead, tbody, tr, th, td {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  font-size: 1em;
+  font-weight: normal;
+  line-height: 1.25;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+body {
+  margin: 10px;
+}
+
+h1, h2, h3, h4, h5, h6, p, blockquote, pre {
+  margin: 0.75em 0 0.75em 0;
+}
+
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+h5 {
+  font-size: 0.83em;
+  font-weight: bold;
+}
+
+h6 {
+  font-size: 0.67em;
+  font-weight: bold;
+}
+
+blockquote {
+  border-left: .25em solid black;
+  padding-left: 1.75em;
+}
+
+pre {
+  font-family: var(--font-mono);
+}
+
+ol, ul {
+  padding-left: 2em;
+  list-style: none;
+}
+
+ol {
+  list-style-type: decimal;
+} 
+
+ul {
+  list-style-type: disc;
+}
+
+/* tables */
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+th, td {
+  vertical-align: top;
+  text-align: left;
+  font-weight: normal;
+}
+
+/* inline elements */
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: var(--font-mono);
+}
+
+sub, sup {
+  position: relative;
+  vertical-align: inherit;
+  font-size: .75em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/* forms elements */
+
+input, button, textarea, select {
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+textarea {
+  vertical-align: top;
+  overflow: auto;
+}

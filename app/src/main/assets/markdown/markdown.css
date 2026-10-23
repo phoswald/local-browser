@@ -1,0 +1,43 @@
+
+@media (min-width: 896px) {
+  body {
+    margin: 20px auto 20px auto;
+    border: 1px;
+    border-style: solid;
+    border-color: lightgrey;
+    padding: 32px;
+    width: 896px;
+  }
+}
+
+h1, h2 {
+  border-bottom: 1px solid lightgrey;
+  padding-bottom: .3em;
+}
+
+blockquote {
+  border-left-color: #606060;
+  color: #606060;
+}
+
+pre {
+  padding: 16px;
+  background-color: #f0f0f0;
+}
+
+tr:nth-child(2n) {
+  background-color: #fafafa;
+}
+
+th, td {
+  border: 1px solid lightgrey;
+  padding: .375em .75em .375em .75em; /* 6px 12px 6px 12px; */
+}
+
+th {
+  font-weight: bold;
+}
+
+code {
+  background-color: #f0f0f0;
+}

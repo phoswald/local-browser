@@ -54,6 +54,14 @@ class LocalFileHandlerTest {
     }
 
     @Test
+    fun markdownFile_isMarkdown() {
+        File(root, "plain/README.md").writeText("# x")
+        File(root, "plain/NOTES.MD").writeText("# y")
+        assertEquals(Resolution.Markdown(File(root, "plain/README.md")), resolve(root, "plain/README.md"))
+        assertEquals(Resolution.Markdown(File(root, "plain/NOTES.MD")), resolve(root, "plain/NOTES.MD"))
+    }
+
+    @Test
     fun missingFile_notFound() {
         assertEquals(Resolution.NotFound, resolve(root, "nope.html"))
     }
