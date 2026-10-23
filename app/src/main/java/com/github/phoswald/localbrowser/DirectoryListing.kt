@@ -11,7 +11,7 @@ object DirectoryListing {
     private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault())
 
     /** Renders an HTML listing of [dir]; [urlPath] is the decoded URL path ending with '/'. */
-    fun render(dir: File, urlPath: String, isRoot: Boolean): String {
+    fun render(dir: File, urlPath: String): String {
         val entries = (dir.listFiles() ?: emptyArray())
             .sortedWith(compareBy<File> { !it.isDirectory }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.name })
             .map { entry ->
@@ -28,7 +28,6 @@ object DirectoryListing {
             mapOf(
                 "title" to "Index of $urlPath",
                 "css" to Templates.text("listing.css"),
-                "isRoot" to isRoot,
                 "entries" to entries,
             ),
         )

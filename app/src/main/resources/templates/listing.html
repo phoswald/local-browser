@@ -12,9 +12,6 @@
   <h1>{{title}}</h1>
   <table>
     <tr><th>Name</th><th>Size</th><th>Modified</th></tr>
-    {{^isRoot}}
-    <tr><td><a href="../">../</a></td><td></td><td></td></tr>
-    {{/isRoot}}
     {{#entries}}
     <tr><td><a href="{{href}}">{{name}}</a></td><td>{{size}}</td><td>{{modified}}</td></tr>
     {{/entries}}

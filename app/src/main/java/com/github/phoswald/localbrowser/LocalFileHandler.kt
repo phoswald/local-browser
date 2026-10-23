@@ -22,7 +22,7 @@ class LocalFileHandler(private val root: File) : WebViewAssetLoader.PathHandler 
         when (val res = resolve(root, path, MimeTypeMap.getSingleton()::getMimeTypeFromExtension)) {
             is Resolution.Serve -> WebResourceResponse(res.mimeType, null, FileInputStream(res.file))
             is Resolution.Markdown -> html(200, "OK", MarkdownPage.render(res.file.name, res.file.readText()))
-            is Resolution.Listing -> html(200, "OK", DirectoryListing.render(res.dir, res.urlPath, res.dir == root.canonicalFile))
+            is Resolution.Listing -> html(200, "OK", DirectoryListing.render(res.dir, res.urlPath))
             is Resolution.Redirect -> html(200, "OK", redirectPage(res.location))
             Resolution.Forbidden -> html(403, "Forbidden", errorPage("403 Forbidden"))
             Resolution.NotFound -> html(404, "Not Found", errorPage("404 Not Found"))
