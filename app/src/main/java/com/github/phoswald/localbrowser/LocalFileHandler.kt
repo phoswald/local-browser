@@ -144,8 +144,6 @@ fun displayPathToUrl(root: File, input: String): String {
     return BASE_URL + encodePath(rel)
 }
 
-private fun redirectPage(location: String) =
-    """<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=$location"><script>location.replace("$location")</script></head><body></body></html>"""
+private fun redirectPage(location: String) = Templates.render("redirect.html", mapOf("location" to location))
 
-private fun errorPage(message: String) =
-    """<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>$message</title></head><body><h1>$message</h1></body></html>"""
+private fun errorPage(message: String) = Templates.render("error.html", mapOf("message" to message))

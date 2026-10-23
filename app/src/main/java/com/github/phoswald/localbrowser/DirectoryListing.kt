@@ -14,27 +14,24 @@ object DirectoryListing {
     fun render(dir: File, urlPath: String, isRoot: Boolean): String {
         val entries = (dir.listFiles() ?: emptyArray())
             .sortedWith(compareBy<File> { !it.isDirectory }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.name })
-        val title = escape("Index of $urlPath")
-        return buildString {
-            append("""<!DOCTYPE html><html><head><meta charset="utf-8">""")
-            append("""<meta name="viewport" content="width=device-width, initial-scale=1">""")
-            append("<title>").append(title).append("</title>")
-            append("<style>").append(STYLE).append("</style></head><body>")
-            append("<h1>").append(title).append("</h1><table>")
-            append("<tr><th>Name</th><th>Size</th><th>Modified</th></tr>")
-            if (!isRoot) {
-                append("""<tr><td><a href="../">../</a></td><td></td><td></td></tr>""")
-            }
-            for (entry in entries) {
+            .map { entry ->
                 val suffix = if (entry.isDirectory) "/" else ""
-                val href = encodePath(entry.name) + suffix
-                append("<tr><td><a href=\"").append(href).append("\">")
-                append(escape(entry.name + suffix)).append("</a></td>")
-                append("<td>").append(if (entry.isDirectory) "" else formatSize(entry.length())).append("</td>")
-                append("<td>").append(dateFormat.format(Instant.ofEpochMilli(entry.lastModified()))).append("</td></tr>")
+                mapOf(
+                    "href" to encodePath(entry.name) + suffix,
+                    "name" to entry.name + suffix,
+                    "size" to if (entry.isDirectory) "" else formatSize(entry.length()),
+                    "modified" to dateFormat.format(Instant.ofEpochMilli(entry.lastModified())),
+                )
             }
-            append("</table></body></html>")
-        }
+        return Templates.render(
+            "listing.html",
+            mapOf(
+                "title" to "Index of $urlPath",
+                "css" to Templates.text("listing.css"),
+                "isRoot" to isRoot,
+                "entries" to entries,
+            ),
+        )
     }
 
     fun formatSize(size: Long): String {
@@ -46,29 +43,4 @@ object DirectoryListing {
         }
         error("unreachable")
     }
-
-    fun escape(s: String): String = buildString {
-        for (c in s) {
-            when (c) {
-                '&' -> append("&amp;")
-                '<' -> append("&lt;")
-                '>' -> append("&gt;")
-                '"' -> append("&quot;")
-                '\'' -> append("&#39;")
-                else -> append(c)
-            }
-        }
-    }
-
-    private const val STYLE = """
-        :root { color-scheme: light dark; }
-        body { font-family: sans-serif; margin: 8px; }
-        h1 { font-size: 1.1em; word-break: break-all; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid #8884; }
-        td:first-child { word-break: break-all; }
-        td:nth-child(2), th:nth-child(2) { text-align: right; white-space: nowrap; }
-        td:nth-child(3) { white-space: nowrap; font-size: 0.85em; }
-        a { text-decoration: none; }
-    """
 }

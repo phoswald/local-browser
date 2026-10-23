@@ -1,0 +1,42 @@
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 8px;
+}
+
+h1 {
+  font-size: 1.1em;
+  word-break: break-all;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid #8884;
+}
+
+td:first-child {
+  word-break: break-all;
+}
+
+td:nth-child(2), th:nth-child(2) {
+  text-align: right;
+  white-space: nowrap;
+}
+
+td:nth-child(3) {
+  white-space: nowrap;
+  font-size: 0.85em;
+}
+
+a {
+  text-decoration: none;
+}

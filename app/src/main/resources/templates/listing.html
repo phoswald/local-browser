@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <style>
+{{{css}}}
+  </style>
+</head>
+<body>
+  <h1>{{title}}</h1>
+  <table>
+    <tr><th>Name</th><th>Size</th><th>Modified</th></tr>
+    {{^isRoot}}
+    <tr><td><a href="../">../</a></td><td></td><td></td></tr>
+    {{/isRoot}}
+    {{#entries}}
+    <tr><td><a href="{{href}}">{{name}}</a></td><td>{{size}}</td><td>{{modified}}</td></tr>
+    {{/entries}}
+  </table>
+</body>
+</html>

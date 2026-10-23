@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="{{assets}}markdown/defaults.css">
+  <link rel="stylesheet" href="{{assets}}markdown/markdown.css">
+  <script src="{{assets}}markdown/markdown.js" type="module"></script>
+</head>
+<body>
+  <markdown-text></markdown-text>
+  <!-- Module scripts run in document order, so <markdown-text> is defined by now. -->
+  <script type="module">document.querySelector('markdown-text').markdown = {{{markdown}}};</script>
+</body>
+</html>
