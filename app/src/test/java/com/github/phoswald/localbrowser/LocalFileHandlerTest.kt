@@ -96,6 +96,23 @@ class LocalFileHandlerTest {
     }
 
     @Test
+    fun externalFile_detectsPdfAndImageUrls() {
+        assertEquals(
+            Resolution.Serve(File(root, "plain/a b.PDF"), "application/pdf"),
+            externalFile(root, BASE_URL + "plain/a%20b.PDF"),
+        )
+        assertEquals(
+            Resolution.Serve(File(root, "plain/missing.pdf"), "application/pdf"),
+            externalFile(root, BASE_URL + "plain/missing.pdf"),
+        )
+        assertEquals(Resolution.Serve(File(root, "x.JPG"), "image/jpeg"), externalFile(root, BASE_URL + "x.JPG"))
+        assertEquals(Resolution.Serve(File(root, "x.png"), "image/png"), externalFile(root, BASE_URL + "x.png"))
+        assertEquals(null, externalFile(root, BASE_URL + "plain/a%20b%26c.txt"))
+        assertEquals(null, externalFile(root, BASE_URL + "plain/"))
+        assertEquals(null, externalFile(root, "https://example.com/plain/a%20b.PDF"))
+    }
+
+    @Test
     fun displayPath_roundTrip() {
         val sdcard = File("/storage/emulated/0")
         assertEquals("/", urlToDisplayPath(BASE_URL))

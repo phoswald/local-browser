@@ -135,7 +135,19 @@ fun parentUrl(url: String): String? {
     if (uri.host != HOST) return null
     val path = (uri.rawPath ?: "/").trimEnd('/')
     if (path.isEmpty()) return null
-    return BASE_URL + path.substringBeforeLast('/').trimStart('/').let { if (it.isEmpty()) it else "$it/" }
+    val parent = path.substringBeforeLast('/').trimStart('/')
+    return if (parent.isEmpty()) BASE_URL else "$BASE_URL$parent/"
+}
+
+/** Extensions opened in another app: the WebView cannot render PDFs and shows images unscaled. */
+private val EXTERNAL_TYPES = setOf("pdf", "png", "jpg", "jpeg", "gif", "webp", "avif")
+
+/** Returns the file below [root] that [url] refers to and its MIME type, if it should open in another app. */
+fun externalFile(root: File, url: String): Resolution.Serve? {
+    val uri = URI(url)
+    val path = uri.path ?: return null
+    if (uri.host != HOST || path.substringAfterLast('.').lowercase() !in EXTERNAL_TYPES) return null
+    return Resolution.Serve(File(root, path), mimeType(path))
 }
 
 /** Converts address bar input (relative to [root], or absolute including it) to a WebView URL. */

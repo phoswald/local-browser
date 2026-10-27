@@ -56,6 +56,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.FileProvider
 import androidx.webkit.WebViewAssetLoader
 import com.github.phoswald.localbrowser.ui.theme.LocalBrowserTheme
 import java.io.File
@@ -126,6 +127,20 @@ fun BrowserScreen(root: File) {
         }
     }
 
+    fun openFile(file: File, mimeType: String) {
+        try {
+            val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(uri, mimeType)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (_: IllegalArgumentException) {
+            // Outside the storage root shared by the FileProvider.
+        } catch (_: ActivityNotFoundException) {
+        }
+    }
+
     val webView = remember {
         val assetLoader = WebViewAssetLoader.Builder()
             .setDomain(HOST)
@@ -143,7 +158,11 @@ fun BrowserScreen(root: File) {
                     assetLoader.shouldInterceptRequest(request.url)
 
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                    if (request.url.scheme == "https" && request.url.host == HOST) return false
+                    if (request.url.scheme == "https" && request.url.host == HOST) {
+                        val ext = externalFile(root, request.url.toString()) ?: return false
+                        openFile(ext.file, ext.mimeType)
+                        return true
+                    }
                     openExternal(request.url)
                     return true
                 }
@@ -170,7 +189,13 @@ fun BrowserScreen(root: File) {
         if (input.contains("://")) {
             openExternal(Uri.parse(input))
         } else {
-            webView.loadUrl(displayPathToUrl(root, input))
+            val url = displayPathToUrl(root, input)
+            val ext = externalFile(root, url)
+            if (ext != null) {
+                openFile(ext.file, ext.mimeType)
+            } else {
+                webView.loadUrl(url)
+            }
         }
     }
 
@@ -181,7 +206,10 @@ fun BrowserScreen(root: File) {
         canGoBack = canGoBack,
         onBack = { webView.goBack() },
         canGoUp = upUrl != null,
-        onUp = { upUrl?.let(webView::loadUrl) },
+        onUp = {
+            val url = upUrl
+            if (url != null) webView.loadUrl(url)
+        },
         onHome = { webView.loadUrl(BASE_URL) },
     ) { modifier ->
         AndroidView(factory = { webView }, modifier = modifier)
